@@ -1,0 +1,132 @@
+// Mohamed Ashraq Lab04 Exercise 2
+
+
+
+#include <stdio.h>
+
+// Conversion functions
+float celsius_to_fahrenheit(float celsius) {
+    return (9.0 / 5.0) * celsius + 32;
+}
+
+float fahrenheit_to_celsius(float fahrenheit) {
+    return (5.0 / 9.0) * (fahrenheit - 32);
+}
+
+float celsius_to_kelvin(float celsius) {
+    return celsius + 273.15;
+}
+
+float kelvin_to_celsius(float kelvin) {
+    return kelvin - 273.15;
+}
+
+float fahrenheit_to_kelvin(float fahrenheit) {
+    return celsius_to_kelvin(fahrenheit_to_celsius(fahrenheit));
+}
+
+float kelvin_to_fahrenheit(float kelvin) {
+    return celsius_to_fahrenheit(kelvin_to_celsius(kelvin));
+}
+
+// Function to categorize temperature and give advice
+void categorize_temperature(float celsius) {
+    if (celsius < 0) {
+        printf("Temperature category: Freezing\nWeather advisory: Be cautious, it's freezing outside.\n");
+    } else if (celsius >= 0 && celsius < 10) {
+        printf("Temperature category: Cold\nWeather advisory: Wear a jacket.\n");
+    } else if (celsius >= 10 && celsius < 25) {
+        printf("Temperature category: Comfortable\nWeather advisory: You should feel comfortable.\n");
+    } else if (celsius >= 25 && celsius < 35) {
+        printf("Temperature category: Hot\nWeather advisory: Stay hydrated and cool.\n");
+    } else {
+        printf("Temperature category: Extreme Heat\nWeather advisory: Stay indoors and avoid the heat.\n");
+    }
+}
+
+// Function to handle invalid scale choices
+int validate_conversion_choice(int choice) {
+    if (choice < 1 || choice > 3) {
+        printf("Invalid choice. Please select a valid option.\n");
+        return 0;
+    }
+    return 1;
+}
+
+int main() {
+    float temperature, converted_temp;
+    int current_scale, target_scale;
+
+    while (1) {
+        printf("Enter the temperature (0 to stop): ");
+        if (scanf("%f", &temperature) != 1 || temperature == 0) break;
+
+        // Validate input for Kelvin
+        if (temperature < 0) {
+            printf("Error: Kelvin cannot be negative. Please enter a valid temperature.\n");
+            continue;
+        }
+
+        printf("Choose the current scale (1) Celsius, (2) Fahrenheit, (3) Kelvin: ");
+        scanf("%d", &current_scale);
+
+        if (!validate_conversion_choice(current_scale)) continue;
+
+        printf("Convert to (1) Celsius, (2) Fahrenheit, (3) Kelvin: ");
+        scanf("%d", &target_scale);
+
+        if (!validate_conversion_choice(target_scale)) continue;
+
+        // Perform the conversion
+        switch (current_scale) {
+            case 1: // Celsius
+                if (target_scale == 1) {
+                    converted_temp = temperature;  
+                } else if (target_scale == 2) {
+                    converted_temp = celsius_to_fahrenheit(temperature);
+                } else if (target_scale == 3) {
+                    converted_temp = celsius_to_kelvin(temperature);
+                }
+                break;
+            case 2: // Fahrenheit
+                if (target_scale == 1) {
+                    converted_temp = fahrenheit_to_celsius(temperature);
+                } else if (target_scale == 2) {
+                    converted_temp = temperature;  
+                } else if (target_scale == 3) {
+                    converted_temp = fahrenheit_to_kelvin(temperature);
+                }
+                break;
+            case 3: // Kelvin
+                if (target_scale == 1) {
+                    converted_temp = kelvin_to_celsius(temperature);
+                } else if (target_scale == 2) {
+                    converted_temp = kelvin_to_fahrenheit(temperature);
+                } else if (target_scale == 3) {
+                    converted_temp = temperature;  
+                }
+                break;
+        }
+
+        // Display the converted temperature
+        if (target_scale == 1) {
+            printf("Converted temperature: %.2f°C\n", converted_temp);
+        } else if (target_scale == 2) {
+            printf("Converted temperature: %.2f°F\n", converted_temp);
+        } else if (target_scale == 3) {
+            printf("Converted temperature: %.2fK\n", converted_temp);
+        }
+
+        // Categorize the temperature based on Celsius
+        if (target_scale == 1) {
+            categorize_temperature(converted_temp);  // Already in Celsius
+        } else if (target_scale == 2) {
+            categorize_temperature(fahrenheit_to_celsius(converted_temp));
+        } else if (target_scale == 3) {
+            categorize_temperature(kelvin_to_celsius(converted_temp));
+        }
+    }
+
+    return 0;
+} 
+
