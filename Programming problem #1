@@ -1,3 +1,5 @@
+// Mohamed Ashraq Lab04 Exercise 1
+
 #include <stdio.h>
 
 void findCombinations(int score) {
